@@ -1,10 +1,10 @@
 package com.jensraaby.xmlforcats
 
-import com.jensraaby.xmlforcats.XmlNode.{NonPrimaryDocumentChild, XmlComment, XmlElement, XmlProcessingInstruction}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 
 trait XmlNodeGenerators {
+  import XmlNode._
 
   val simpleElement: Gen[XmlElement] = for {
     label <- arbitrary[String]
@@ -13,6 +13,10 @@ trait XmlNodeGenerators {
   val comment: Gen[XmlComment] = for {
     commentText <- arbitrary[String]
   } yield XmlComment(commentText)
+
+  val data: Gen[XmlData] = for {
+    dataText <- arbitrary[String]
+  } yield XmlData(dataText)
 
   val processingInstruction: Gen[XmlProcessingInstruction] = for {
     instruction <- arbitrary[String]

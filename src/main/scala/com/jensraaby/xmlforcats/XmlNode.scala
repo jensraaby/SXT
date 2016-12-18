@@ -1,6 +1,6 @@
 package com.jensraaby.xmlforcats
 
-import cats.Show
+import cats.{Eq, Show}
 
 
 /**
@@ -8,6 +8,16 @@ import cats.Show
   */
 sealed abstract class XmlNode extends Product with Serializable {
   import XmlNode._
+
+  final def name: String =
+    this match {
+      case _: XmlComment => "Comment"
+      case _: XmlElement => "Element"
+      case _: XmlData => "Data"
+      case _: XmlDocument => "Document"
+      case _: XmlDocumentRoot => "DocumentRoot"
+      case _: XmlProcessingInstruction => "ProcessingInstruction"
+    }
 
   def isElement: Boolean
   def isDocument: Boolean
@@ -85,7 +95,7 @@ final object XmlNode {
   }
 
 
-  private[xmlforcats] final case class XmlComment(comment: Comment) extends XmlNode with NonPrimaryDocumentChild {
+  private[xmlforcats] final case class XmlComment(comment: String) extends XmlNode with NonPrimaryDocumentChild {
     override def isElement: Boolean = false
     override def isDocument: Boolean = false
     override def isProcessingInstruction: Boolean = false
@@ -93,12 +103,21 @@ final object XmlNode {
     override def isData: Boolean = false
   }
 
-  private[xmlforcats] final case class XmlData(data: Data) extends XmlNode {
+  private[xmlforcats] final case class XmlData(data: String) extends XmlNode {
     override def isElement: Boolean = false
     override def isDocument: Boolean = false
     override def isProcessingInstruction: Boolean = false
     override def isComment: Boolean = false
     override def isData: Boolean = true
+  }
+
+  implicit final val eqNode: Eq[XmlNode] = Eq.instance {
+    case (XmlComment(a), XmlComment(b)) => a == b
+    case (XmlData(a), XmlData(b)) => a == b
+    case (XmlProcessingInstruction(a), XmlProcessingInstruction(b)) => a == b
+    case (a: XmlElement, b: XmlElement) => a == b
+    case (XmlDocumentRoot(a), XmlDocumentRoot(b)) => a == b
+    case _ => false
   }
 
   implicit final val showNode: Show[XmlNode] = Show.fromToString[XmlNode]

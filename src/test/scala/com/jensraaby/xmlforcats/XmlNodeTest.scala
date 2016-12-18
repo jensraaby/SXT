@@ -5,7 +5,8 @@ import org.scalacheck.Arbitrary._
 import org.scalatest.prop.Checkers
 import org.scalatest.{FlatSpec, Matchers}
 
-class XmlNodeTest extends FlatSpec with Matchers with Checkers with XmlNodeGenerators {
+
+class XmlNodeTest extends XmlForCatsSuite with XmlNodeGenerators {
   import XmlNode._
 
   "A Data node" should "simply toString the underlying data" in {
@@ -68,5 +69,14 @@ class XmlNodeTest extends FlatSpec with Matchers with Checkers with XmlNodeGener
       val child = XmlElement(childLabel, Nil, Set.empty)
       XmlDocumentRoot(child).toString == child.toString
     }
+  }
+
+  "Name method" should "return simple names" in {
+    XmlElement("label", Nil, Set.empty).name shouldBe "Element"
+    XmlComment("aa").name shouldBe "Comment"
+    XmlData("bb").name shouldBe "Data"
+    XmlProcessingInstruction("cc").name shouldBe "ProcessingInstruction"
+    XmlDocument("cc", None, simpleElement.sample.get, Nil).name shouldBe "Document"
+    XmlDocumentRoot(simpleElement.sample.get).name shouldBe "DocumentRoot"
   }
 }
