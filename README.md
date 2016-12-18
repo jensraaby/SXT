@@ -1,4 +1,5 @@
 # xmlforcats
+[![Build Status](https://travis-ci.org/jensraaby/xmlforcats.svg?branch=master)](https://travis-ci.org/jensraaby/xmlforcats)
 
 The name of this repo/library is temporary. 
 I have a lot of respect for Travis Brown's Circe library, which was originally called "JSON for Cats", hence "XML for Cats".
