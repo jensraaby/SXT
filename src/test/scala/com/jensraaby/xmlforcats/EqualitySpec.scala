@@ -39,9 +39,10 @@ class EqualitySpec extends XmlForCatsSuite with XmlNodeGenerators with PropertyC
 
     forAll { (elem1: XmlElement, elem2: XmlElement) =>
       Eq.eqv[XmlNode](elem1, elem2) shouldBe (
-        elem1.label == elem2.label
-          && elem1.attributes == elem2.attributes
-          && elem1.children == elem2.children)
+        elem1.label == elem2.label &&
+          elem1.attributes == elem2.attributes &&
+          elem1.children == elem2.children
+        )
     }
   }
 

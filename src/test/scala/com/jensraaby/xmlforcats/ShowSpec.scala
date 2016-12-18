@@ -1,57 +1,59 @@
 package com.jensraaby.xmlforcats
 
 import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary._
-import org.scalatest.prop.Checkers
-import org.scalatest.{FlatSpec, Matchers}
 
 
-class XmlNodeTest extends XmlForCatsSuite with XmlNodeGenerators {
+class ShowSpec extends XmlForCatsSuite with XmlNodeGenerators {
+
+  import cats.syntax.show._
+
+  private def showNode(node: XmlNode): String = node.show
+
   import XmlNode._
 
   "A Data node" should "simply toString the underlying data" in {
     check { str: String =>
-      XmlData(str).toString == str
+      showNode(XmlData(str)) == str
     }
   }
 
   "A Comment node" should "wrap the underlying comment c as in <!--c-->" in {
     check { str: String =>
-      XmlComment(str).toString == s"<!--$str-->"
+      showNode(XmlComment(str)) == s"<!--$str-->"
     }
   }
 
   "A Processing Instruction node" should "wrap the instruction i as in <?i?>" in {
     check { str: String =>
-      XmlProcessingInstruction(str).toString == s"<?$str?>"
+      showNode(XmlProcessingInstruction(str)) == s"<?$str?>"
     }
   }
 
   "An Element node" should "print its label and self close" in {
     check { (label: String) =>
-      XmlElement(label, Nil, Set.empty).toString == s"<$label/>"
+      showNode(XmlElement(label, Nil, Set.empty)) == s"<$label/>"
     }
   }
 
   "A Document node" should "print its type (basic child)" in {
     check { (label: String) =>
       val child = XmlElement(label, Nil, Set.empty)
-      XmlDocument(label, None, child, Nil).toString == s"<!doctype $label>${child.toString}"
+      showNode(XmlDocument(label, None, child, Nil)) == s"<!doctype $label>${child}"
     }
   }
 
   it should "print its type (basic child and URL)" in {
     check { (label: String, url: String) =>
       val child = XmlElement(label, Nil, Set.empty)
-      XmlDocument(label, Some(url), child, Nil).toString == s"""<!doctype $label "$url">${child.toString}"""
+      showNode(XmlDocument(label, Some(url), child, Nil)) == s"""<!doctype $label "$url">${child}"""
     }
   }
 
-  implicit val arbitraryNonPrimaryDocumentChildren = Arbitrary(nonPrimaryDocumentChildSeq)
+  implicit val arbitraryNonPrimaryDocumentChildren: Arbitrary[Seq[NonPrimaryDocumentChild]] = Arbitrary(nonPrimaryDocumentChildSeq)
   it should "print all the children (matching child and URL)" in {
     check { (label: String, url: String, otherChildren: Seq[NonPrimaryDocumentChild]) =>
       val child = XmlElement(label, Nil, Set.empty)
-      XmlDocument(label, Some(url), child, otherChildren).toString ==
+      showNode(XmlDocument(label, Some(url), child, otherChildren)) ==
         s"""<!doctype $label "$url">${child.toString}""" + otherChildren.mkString("\n")
     }
   }
@@ -59,7 +61,7 @@ class XmlNodeTest extends XmlForCatsSuite with XmlNodeGenerators {
   it should "print all the children (basic child)" in {
     implicit val childElement = Arbitrary(simpleElement)
     check { (label: String, child: XmlElement, otherChildren: Seq[NonPrimaryDocumentChild]) =>
-      XmlDocument(label, None, child, otherChildren).toString ==
+      showNode(XmlDocument(label, None, child, otherChildren)) ==
         s"""<!doctype $label>${child.toString}""" + otherChildren.mkString("\n")
     }
   }
@@ -67,16 +69,7 @@ class XmlNodeTest extends XmlForCatsSuite with XmlNodeGenerators {
   it should "not print itself if it is the root node" in {
     check { (childLabel: String) =>
       val child = XmlElement(childLabel, Nil, Set.empty)
-      XmlDocumentRoot(child).toString == child.toString
+      showNode(XmlDocumentRoot(child)) == child.toString
     }
-  }
-
-  "Name method" should "return simple names" in {
-    XmlElement("label", Nil, Set.empty).name shouldBe "Element"
-    XmlComment("aa").name shouldBe "Comment"
-    XmlData("bb").name shouldBe "Data"
-    XmlProcessingInstruction("cc").name shouldBe "ProcessingInstruction"
-    XmlDocument("cc", None, simpleElement.sample.get, Nil).name shouldBe "Document"
-    XmlDocumentRoot(simpleElement.sample.get).name shouldBe "DocumentRoot"
   }
 }

@@ -25,6 +25,11 @@ sealed abstract class XmlNode extends Product with Serializable {
   def isComment: Boolean
   def isData: Boolean
 
+  override final def equals(that: Any): Boolean = that match {
+    case that: XmlNode => XmlNode.eqNode.eqv(this, that)
+    case _ => false
+  }
+
   override final def toString: String = this match {
     case XmlData(data) => data.toString
     case XmlComment(comment) => "<!--" + comment + "-->"
@@ -87,7 +92,7 @@ final object XmlNode {
   }
 
   private[xmlforcats] final case class XmlProcessingInstruction(instruction: Instruction) extends XmlNode with NonPrimaryDocumentChild {
-    override def isElement: Boolean = true
+    override def isElement: Boolean = false
     override def isDocument: Boolean = false
     override def isProcessingInstruction: Boolean = true
     override def isComment: Boolean = false
@@ -115,7 +120,7 @@ final object XmlNode {
     case (XmlComment(a), XmlComment(b)) => a == b
     case (XmlData(a), XmlData(b)) => a == b
     case (XmlProcessingInstruction(a), XmlProcessingInstruction(b)) => a == b
-    case (a: XmlElement, b: XmlElement) => a == b
+    case (a: XmlElement, b: XmlElement) => (a.label == b.label) && (a.children == b.children) && (a.attributes == b.attributes)
     case (XmlDocumentRoot(a), XmlDocumentRoot(b)) => a == b
     case _ => false
   }
