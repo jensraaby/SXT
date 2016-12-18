@@ -1,8 +1,7 @@
 # xmlforcats
-Trying to make an XML library for Scala using Cats
 
 The name of this repo/library is temporary. 
-I have a lot of respect for the Travis Brown's Circe library, which was originally called "JSON for Cats", hence "XML for Cats".
+I have a lot of respect for Travis Brown's Circe library, which was originally called "JSON for Cats", hence "XML for Cats".
 
 
 ## The Plan
