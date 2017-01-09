@@ -1,4 +1,4 @@
-package com.jensraaby.xmlforcats
+package com.jensraaby.sxt
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

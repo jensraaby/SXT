@@ -1,4 +1,4 @@
-package com.jensraaby.xmlforcats
+package com.jensraaby.sxt
 
 import cats.{Eq, Show}
 
@@ -56,9 +56,9 @@ final object XmlNode {
   type Comment = String
   type Data = String
 
-  private[xmlforcats] final case class XmlElement(label: ElementLabel,
-                                                  children: Seq[XmlNode],
-                                                  attributes: Set[(AttrName, AttrValue)])
+  private[sxt] final case class XmlElement(label: ElementLabel,
+                                           children: Seq[XmlNode],
+                                           attributes: Set[(AttrName, AttrValue)])
     extends XmlNode {
     override def isElement: Boolean = true
     override def isDocument: Boolean = false
@@ -67,9 +67,9 @@ final object XmlNode {
     override def isData: Boolean = false
   }
 
-  private[xmlforcats] sealed trait NonPrimaryDocumentChild
+  private[sxt] sealed trait NonPrimaryDocumentChild
 
-  private[xmlforcats] final case class XmlDocumentRoot(child: XmlElement) extends XmlNode {
+  private[sxt] final case class XmlDocumentRoot(child: XmlElement) extends XmlNode {
     override def isElement: Boolean = false
     override def isDocument: Boolean = true
     override def isProcessingInstruction: Boolean = false
@@ -79,10 +79,10 @@ final object XmlNode {
 
   //TODO: explore how to enforce the constraint: "if this document node is not the root, its one child that is an element node must be its last child."
   //TODO: merge the primaryChild and otherChildren to maintain ordering - implement the types requirements some other way
-  private[xmlforcats] final case class XmlDocument(label: ElementLabel,
-                                                   url: Option[Url],
-                                                   primaryChild: XmlElement,
-                                                   otherChildren: Seq[NonPrimaryDocumentChild])
+  private[sxt] final case class XmlDocument(label: ElementLabel,
+                                            url: Option[Url],
+                                            primaryChild: XmlElement,
+                                            otherChildren: Seq[NonPrimaryDocumentChild])
     extends XmlNode {
     override def isElement: Boolean = false
     override def isDocument: Boolean = true
@@ -91,7 +91,7 @@ final object XmlNode {
     override def isData: Boolean = false
   }
 
-  private[xmlforcats] final case class XmlProcessingInstruction(instruction: Instruction) extends XmlNode with NonPrimaryDocumentChild {
+  private[sxt] final case class XmlProcessingInstruction(instruction: Instruction) extends XmlNode with NonPrimaryDocumentChild {
     override def isElement: Boolean = false
     override def isDocument: Boolean = false
     override def isProcessingInstruction: Boolean = true
@@ -100,7 +100,7 @@ final object XmlNode {
   }
 
 
-  private[xmlforcats] final case class XmlComment(comment: String) extends XmlNode with NonPrimaryDocumentChild {
+  private[sxt] final case class XmlComment(comment: String) extends XmlNode with NonPrimaryDocumentChild {
     override def isElement: Boolean = false
     override def isDocument: Boolean = false
     override def isProcessingInstruction: Boolean = false
@@ -108,7 +108,7 @@ final object XmlNode {
     override def isData: Boolean = false
   }
 
-  private[xmlforcats] final case class XmlData(data: String) extends XmlNode {
+  private[sxt] final case class XmlData(data: String) extends XmlNode {
     override def isElement: Boolean = false
     override def isDocument: Boolean = false
     override def isProcessingInstruction: Boolean = false

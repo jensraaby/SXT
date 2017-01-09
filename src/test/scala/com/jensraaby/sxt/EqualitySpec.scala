@@ -1,11 +1,11 @@
-package com.jensraaby.xmlforcats
+package com.jensraaby.sxt
 
 import cats.Eq
 import org.scalacheck.Arbitrary
 import org.scalatest.prop.PropertyChecks
 
 
-class EqualitySpec extends XmlForCatsSuite with XmlNodeGenerators with PropertyChecks {
+class EqualitySpec extends SXTSuite with XmlNodeGenerators with PropertyChecks {
 
   import XmlNode._
 

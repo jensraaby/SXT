@@ -6,7 +6,7 @@ lazy val root = (project in file(".")).
       organization := "com.jensraaby",
       scalaVersion := "2.12.1"
     )),
-    name := "xmlForCats",
+    name := "SXT",
     libraryDependencies ++= Seq(scalaTest, scalaCheck) map (_ % Test),
     libraryDependencies ++= Seq(cats, shapeless)
   )

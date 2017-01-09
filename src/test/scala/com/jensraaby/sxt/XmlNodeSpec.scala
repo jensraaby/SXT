@@ -1,7 +1,7 @@
-package com.jensraaby.xmlforcats
+package com.jensraaby.sxt
 
 
-class XmlNodeSpec extends XmlForCatsSuite with XmlNodeGenerators {
+class XmlNodeSpec extends SXTSuite with XmlNodeGenerators {
   import XmlNode._
 
   "Name method" should "return simple names" in {

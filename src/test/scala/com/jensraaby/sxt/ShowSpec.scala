@@ -1,13 +1,11 @@
-package com.jensraaby.xmlforcats
+package com.jensraaby.sxt
 
 import org.scalacheck.Arbitrary
 
 
-class ShowSpec extends XmlForCatsSuite with XmlNodeGenerators {
+class ShowSpec extends SXTSuite with XmlNodeGenerators {
 
-  import cats.syntax.show._
-
-  private def showNode(node: XmlNode): String = node.show
+  private def showNode(node: XmlNode): String = XmlNode.showNode.show(node)
 
   import XmlNode._
 
