@@ -28,7 +28,7 @@ trait Tree[A, T[_]] {
 
   def setChildren(children: Stream[T[A]])(tree: T[A]): T[A] = changeChildren(_ => children)(tree)
 
-  def foldTree[B](combinator: ((A, Seq[B]) => B))(tree: T[A]): B
+  def foldTree[B](combinator: ((A, Stream[B]) => B))(tree: T[A]): B
 
 // TODO: nodesTree, depthTree, cardTree
 }

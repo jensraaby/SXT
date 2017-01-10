@@ -15,7 +15,7 @@ case class NTree[A](node: A, children: Stream[NTree[A]])
 
 object NTree {
 
-  def treeInstance[A] = new Tree[A, NTree[A]] {
+  implicit def treeInstance[A] = new Tree[A, NTree] {
     override def mkTree(a: A)(children: Stream[NTree[A]]): NTree[A] = NTree(a, children)
 
     override def getNode(tree: NTree[A]): A = tree.node
@@ -27,7 +27,7 @@ object NTree {
     override def changeChildren(transform: (Stream[NTree[A]]) => Stream[NTree[A]])(tree: NTree[A]): NTree[A] =
       tree.copy(children = transform(tree.children))
 
-    override def foldTree[B](combinator: (A, Seq[B]) => B)(tree: NTree[A]): B =
+    override def foldTree[B](combinator: (A, Stream[B]) => B)(tree: NTree[A]): B =
       combinator(tree.node, tree.children.map(foldTree(combinator)))
   }
 }
