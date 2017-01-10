@@ -30,5 +30,15 @@ trait Tree[A, T[_]] {
 
   def foldTree[B](combinator: ((A, Stream[B]) => B))(tree: T[A]): B
 
-// TODO: nodesTree, depthTree, cardTree
+  def nodesTree(tree: T[A]): Stream[A] = foldTree[Stream[A]] { (node, childrenResults) =>
+    node #:: childrenResults.flatten
+  }(tree)
+
+  def depthTree(tree: T[A]): Int = foldTree[Int] { (_, childrenResults) =>
+    1 + childrenResults.fold(0)(_ max _)
+  }(tree)
+
+  def cardTree(tree: T[A]): Int = foldTree[Int] { (_, childrenResults) =>
+    1 + childrenResults.sum
+  }(tree)
 }

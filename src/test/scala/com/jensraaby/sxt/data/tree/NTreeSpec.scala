@@ -8,6 +8,8 @@ class NTreeSpec extends SXTSuite {
 
   private val firstLeaf = stringTreeInstance.mkLeaf("firstLeaf")
   private val secondLeaf = stringTreeInstance.mkLeaf("secondLeaf")
+  private val treeWith2Children = stringTreeInstance.mkTree("Top")(Stream(firstLeaf, secondLeaf))
+
 
   "Tree typeclass instance" should "construct a leaf" in {
     val nodeValue = "MyThing"
@@ -15,6 +17,7 @@ class NTreeSpec extends SXTSuite {
 
     stringTreeInstance.getNode(tree) shouldBe nodeValue
     stringTreeInstance.getChildren(tree) shouldBe Stream.empty
+    assert(stringTreeInstance.isLeaf(tree))
   }
 
   it should "construct a tree with 2 sub-trees" in {
@@ -24,6 +27,7 @@ class NTreeSpec extends SXTSuite {
 
     tree.node shouldBe firstNodeValue
     tree.children shouldBe Stream(firstLeaf, secondLeaf)
+    assert(stringTreeInstance.isInner(tree))
   }
 
   it should "change a node" in {
@@ -36,12 +40,26 @@ class NTreeSpec extends SXTSuite {
   }
 
   it should "fold over a tree with 2 leaf sub-trees" in {
-    val tree = stringTreeInstance.mkTree("Top")(Stream(firstLeaf, secondLeaf))
+    val tree = treeWith2Children
 
     val resultSumLength = stringTreeInstance.foldTree[Int]((string: String, acc: Stream[Int]) => acc.sum + string.length)(tree)
     resultSumLength shouldBe firstLeaf.node.length + secondLeaf.node.length + tree.node.length
 
     val resultConcat = stringTreeInstance.foldTree[String]((string: String, acc: Stream[String]) => string + acc.mkString)(tree)
     resultConcat shouldBe "TopfirstLeafsecondLeaf"
+  }
+
+  it should "get all nodes" in {
+    stringTreeInstance.nodesTree(treeWith2Children) shouldBe Stream("Top", "firstLeaf", "secondLeaf")
+  }
+
+  it should "compute the depth" in {
+    stringTreeInstance.depthTree(firstLeaf) shouldBe 1
+    stringTreeInstance.depthTree(treeWith2Children) shouldBe 2
+  }
+
+  it should "compute the number of nodes" in {
+    stringTreeInstance.cardTree(firstLeaf) shouldBe 1
+    stringTreeInstance.cardTree(treeWith2Children) shouldBe 3
   }
 }
