@@ -73,4 +73,3 @@ trait XmlNode[A] {
 
 class QName
 class Attributes
-
