@@ -30,4 +30,13 @@ object NTree {
     override def foldTree[B](combinator: (A, Stream[B]) => B)(tree: NTree[A]): B =
       combinator(tree.node, tree.children.map(foldTree(combinator)))
   }
+
+  object Leaf {
+    def apply[A](node: A): NTree[A] = NTree(node, Stream.empty)
+
+    def unapply[A](tree: NTree[A]): Option[A] = tree match {
+      case NTree(node, Stream.Empty) => Some(node)
+      case _ => None
+    }
+  }
 }

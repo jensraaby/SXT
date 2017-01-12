@@ -1,6 +1,7 @@
 package com.jensraaby.sxt.data.tree
 
 import com.jensraaby.sxt.SXTSuite
+import com.jensraaby.sxt.data.tree.NTree.Leaf
 
 class NTreeSpec extends SXTSuite {
 
@@ -10,6 +11,21 @@ class NTreeSpec extends SXTSuite {
   private val secondLeaf = stringTreeInstance.mkLeaf("secondLeaf")
   private val treeWith2Children = stringTreeInstance.mkTree("Top")(Stream(firstLeaf, secondLeaf))
 
+  "NTree Leaf" should "unapply" in {
+    val simpleLeaf = NTree(1, Stream.empty)
+
+    val unfoldedValue = simpleLeaf match {
+      case Leaf(nodeValue) => nodeValue
+      case _ => ???
+    }
+
+    unfoldedValue shouldBe simpleLeaf.node
+  }
+
+  it should "apply" in {
+    val leaf = Leaf("hello")
+    leaf shouldBe NTree("hello", Stream.empty)
+  }
 
   "Tree typeclass instance" should "construct a leaf" in {
     val nodeValue = "MyThing"
