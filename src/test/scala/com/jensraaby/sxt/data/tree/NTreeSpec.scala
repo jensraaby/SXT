@@ -1,7 +1,7 @@
 package com.jensraaby.sxt.data.tree
 
 import com.jensraaby.sxt.SXTSuite
-import com.jensraaby.sxt.data.tree.NTree.Leaf
+import com.jensraaby.sxt.data.tree.NTree.{Inner, Leaf}
 
 class NTreeSpec extends SXTSuite {
 
@@ -25,6 +25,27 @@ class NTreeSpec extends SXTSuite {
   it should "apply" in {
     val leaf = Leaf("hello")
     leaf shouldBe NTree("hello", Stream.empty)
+  }
+
+  "NTree Inner" should "unapply" in {
+    val simpleInnerNode = NTree("SomeThingStringy", Stream(firstLeaf))
+
+    val unfoldedValue = simpleInnerNode match {
+      case Inner(nodeValue, children) => NTree(nodeValue, children)
+      case _ => ???
+    }
+
+    unfoldedValue shouldBe simpleInnerNode
+  }
+
+  it should "apply from a Traversable" in {
+    val inner = Inner("topString", Seq(firstLeaf, secondLeaf))
+    inner shouldBe NTree("topString", Stream(firstLeaf, secondLeaf))
+  }
+
+  it should "apply from a Stream" in {
+    val inner = Inner("StreamyString", Stream(firstLeaf, secondLeaf))
+    inner shouldBe NTree("StreamyString", Stream(firstLeaf, secondLeaf))
   }
 
   "Tree typeclass instance" should "construct a leaf" in {

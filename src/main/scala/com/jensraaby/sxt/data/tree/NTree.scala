@@ -15,6 +15,24 @@ case class NTree[A](node: A, children: Stream[NTree[A]])
 
 object NTree {
 
+  object Leaf {
+    def apply[A](node: A): NTree[A] = NTree(node, Stream.empty)
+
+    def unapply[A](tree: NTree[A]): Option[A] = tree match {
+      case NTree(node, Stream.Empty) => Some(node)
+      case _ => None
+    }
+  }
+
+  object Inner {
+    def apply[A](node: A, children: Traversable[NTree[A]]): NTree[A] = NTree(node, children.toStream)
+
+    def unapply[A](tree: NTree[A]): Option[(A, Stream[NTree[A]])] = tree match {
+      case NTree(node, children) => Some((node, children))
+      case _ => None
+    }
+  }
+
   implicit def treeInstance[A] = new Tree[A, NTree] {
     override def mkTree(a: A)(children: Stream[NTree[A]]): NTree[A] = NTree(a, children)
 
@@ -29,14 +47,5 @@ object NTree {
 
     override def foldTree[B](combinator: (A, Stream[B]) => B)(tree: NTree[A]): B =
       combinator(tree.node, tree.children.map(foldTree(combinator)))
-  }
-
-  object Leaf {
-    def apply[A](node: A): NTree[A] = NTree(node, Stream.empty)
-
-    def unapply[A](tree: NTree[A]): Option[A] = tree match {
-      case NTree(node, Stream.Empty) => Some(node)
-      case _ => None
-    }
   }
 }
