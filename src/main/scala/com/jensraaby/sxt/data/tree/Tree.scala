@@ -14,11 +14,9 @@ trait Tree[A, T[_]] {
 
   def isInner(tree: T[A]): Boolean = !isLeaf(tree)
 
-
   def getNode(tree: T[A]): A
 
   def getChildren(tree: T[A]): Stream[T[A]]
-
 
   def changeNode(transform: (A => A))(tree: T[A]): T[A]
 
@@ -27,6 +25,9 @@ trait Tree[A, T[_]] {
   def setNode(a: A)(tree: T[A]): T[A] = changeNode(_ => a)(tree)
 
   def setChildren(children: Stream[T[A]])(tree: T[A]): T[A] = changeChildren(_ => children)(tree)
+
+  // fold in a way more like ScalaZ
+  //def fold2[B](z: => B)(f: (A, => B) => B)(tree: T[A]) = foldTree(f(tree.))
 
   def foldTree[B](combinator: ((A, Stream[B]) => B))(tree: T[A]): B
 

@@ -1,5 +1,7 @@
 package com.jensraaby.sxt.data.tree
 
+import cats.Foldable
+
 
 /**
   * NTree: an ordered rose tree.
@@ -47,5 +49,26 @@ object NTree {
 
     override def foldTree[B](combinator: (A, Stream[B]) => B)(tree: NTree[A]): B =
       combinator(tree.node, tree.children.map(foldTree(combinator)))
+  }
+
+  implicit def foldableInstance[A] = new Foldable[NTree] {
+    import cats._
+    import cats.implicits._
+
+    private def flatten[A](nTree: NTree[A]): Stream[A] = {
+      def squish(nTree: NTree[A], xs: Stream[A]): Stream[A] = {
+        val childStream: Eval[Stream[A]] = Foldable[Stream].foldRight(nTree.children, Eval.later(xs))((a, bb) => Eval.later(squish(a, bb.value)))
+        Stream.cons(nTree.node, childStream.value)
+      }
+      squish(nTree, Stream.empty[A])
+    }
+
+    override def foldLeft[A, B](fa: NTree[A], b: B)(f: (B, A) => B): B = fa match {
+      case Leaf(node) => f(b, node)
+      case Inner(node, children) => Foldable[Stream].foldLeft(flatten(fa), b)(f(_, _))
+
+    }
+
+    override def foldRight[A, B](fa: NTree[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] = ???
   }
 }
