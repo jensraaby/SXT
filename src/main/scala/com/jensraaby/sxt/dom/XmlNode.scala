@@ -71,5 +71,4 @@ trait XmlNode[A] {
   //  def setDTDAttrl     Attributes -> a -> a
 }
 
-class QName
 class Attributes
