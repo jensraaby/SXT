@@ -7,7 +7,7 @@ object Dependencies {
 
   lazy val shapeless = "com.chuusai" %% "shapeless" % "2.3.2"
 
-  lazy val cats = "org.typelevel" %% "cats" % "0.8.1"
+  lazy val cats = "org.typelevel" %% "cats" % "0.9.0"
 
-  lazy val scalaz = "org.scalaz" %% "scalaz-core" % "7.2.8"
+  lazy val scalaXml = "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 }
