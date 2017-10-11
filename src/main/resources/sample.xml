@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+    <p>My para</p>
+    <h2>My header</h2>
+    <div>
+        <p>My second para</p>
+    </div>
+</root>

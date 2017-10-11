@@ -25,6 +25,6 @@ final object XmlDecoder {
   implicit def listDecoder[A: XmlDecoder]: XmlDecoder[List[A]] = new XmlDecoder[List[A]] {
     private val aDecoder = implicitly[XmlDecoder[A]]
     import cats.implicits._
-    override def apply(node: NodeSeq) = node.map(aDecoder.apply).toList.sequenceU
+    override def apply(node: NodeSeq) = node.map(aDecoder.apply).toList.sequence
   }
 }
